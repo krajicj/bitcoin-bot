@@ -70,7 +70,7 @@ exports.buyBtcForEur = async (funds) => {
         const axiosInstance = createAxios('POST', '/orders', data);
         const response = await axiosInstance.post('/orders', data);
         if (response.status === 200) {
-            console.log(`${response.data.created_at} - successfuly bought ${response.data.size} BTC for ${response.data.price} EUR`)
+            console.log(`${response.data.created_at} - successfuly bought ${response.data.filled_size} BTC for ${funds} EUR`)
             return response.data;
         }
 
