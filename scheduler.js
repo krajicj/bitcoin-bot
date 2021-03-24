@@ -135,10 +135,12 @@ const planJob = function (job) {
  * 
  * @param {object} job which call this function 
  */
-const buyBtcEur = (job) => {
+const buyBtcEur = async (job) => {
     //if job data has amount then call coinbase module function
     if(job.functionData.amount){
-        coinbase.buyBtcForEur(job.functionData.amount);
+       const data = await coinbase.buyBtcForEur(job.functionData.amount);
+       //Log response
+       model.addLog(data);
     }   
 
 }

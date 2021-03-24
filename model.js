@@ -64,4 +64,15 @@ exports.addJob = (job) => {
 }
 
 
+/**
+ * Persit log to the file
+ * 
+ * @param {object} log object to log
+ */
+ exports.addLog = (log) => {
+  db.push("logs",{logs: [log]}, false)
+  return log;
+}
+
+
 
