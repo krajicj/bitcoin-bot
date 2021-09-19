@@ -1,7 +1,7 @@
 const {JsonDB}  = require('node-json-db');
 const {Config} = require('node-json-db/dist/lib/JsonDBConfig');
 
-const db = new JsonDB(new Config("data", true, false, '.'));
+const db = new JsonDB(new Config("./model/data", true, true, '.'));
 
 
 

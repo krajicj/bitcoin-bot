@@ -1,9 +1,6 @@
 const axios = require('axios');
 const crypto = require('crypto');
-const dotenv = require('dotenv');
 
-//load env vars
-dotenv.config({ path: './config/config.env' });
 
 /* Coinbase API address */
 const API = 'https://api.pro.coinbase.com';
@@ -13,6 +10,7 @@ const KEY = process.env.KEY;
 const SECRET = process.env.SECRET;
 /* Coinbase PASSPHRASE */ 
 const PASS = process.env.PASS;
+
 
 
 /**
@@ -75,7 +73,7 @@ exports.buyBtcForEur = async (funds) => {
         }
 
     } catch (error) {
-        console.log(error);
+        console.log(error.data);
     }
 
     //Return null if request fails

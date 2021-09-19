@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const model = require('./model');
+const model = require('../model/model');
 const coinbase = require('./coinbase');
 
 
@@ -38,7 +38,6 @@ exports.addOrUpdateJob = (job) => {
   const exist = model.getJob(job.id);
   if(exist) model.deleteJob(job.id);
   model.addJob(job);
-
 }
 
 
