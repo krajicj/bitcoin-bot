@@ -5,6 +5,7 @@ const {
     login
 } = require('../controller/auth');
 
+//Login and get token
 router.post('/login', login);
 
 module.exports = router;

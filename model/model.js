@@ -11,11 +11,12 @@ const db = new JsonDB(new Config("./model/data", true, true, '.'));
  */
  exports.getJob = (id) => {
    try{
-     return db.getData(".jobs").find(element => element.id = id);
+     return db.getData(".jobs").find(element => element.id === id);
    }catch(error){
       console.log('DB file not exist yet');
    }
 }
+
 
 /**
  * 
@@ -44,8 +45,7 @@ exports.addJob = (job) => {
     dayOfMonth: job.dayOfMonth || '*',
     month: job.month || '*',
     dayOfWeek: job.dayOfWeek || '*',
-    functionName: job.functionName,
-    functionData: job.functionData || {},
+    orderData: job.orderData || {},    
     id: job.id || Date.now()
     }
 

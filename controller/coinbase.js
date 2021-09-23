@@ -22,7 +22,7 @@ exports.getAccounts = async () => {
     try {
         const axiosInstance = createAxios('GET', '/accounts', '');
         const response = await axiosInstance.get('/accounts');
-        return response;
+        return response.data;
     } catch (err) {
         console.log(err);
     }
@@ -33,42 +33,31 @@ exports.getAccounts = async () => {
 
 
 /**
+ * Get all coinbase products
  * 
- * @returns get btc price in eur in last tick
+ * @returns coinbase products
  */
-exports.getBtcEurPrice = async () => {
+exports.getProducts = async () => {
     try {
-        const axiosInstance = createAxios('GET', '/products/BTC-EUR/ticker', '');
-        const response = await axiosInstance.get('/products/BTC-EUR/ticker');
-        if (response.status === 200) {
-            return response.data.price;
-        }
-    } catch (error) {
-        console.log(error);
+        const axiosInstance = createAxios('GET', '/products', '');
+        const response = await axiosInstance.get('/products');
+        return response.data;
+    } catch (err) {
+        console.log(err);
     }
 
-    //Return null if request fails
-    return null;
+     //Return null if request fails
+     return null;
 }
 
-/**
- * 
- * @param {float} funds amount of eur 
- * @returns 
- */
-exports.buyBtcForEur = async (funds) => {
+exports.placeOrder = async (orderData) => {
     try {
-        const data = {
-            type: 'market',
-            side: 'buy',
-            product_id: 'BTC-EUR',
-            funds: funds
-        };
+        const data = orderData;
 
         const axiosInstance = createAxios('POST', '/orders', data);
         const response = await axiosInstance.post('/orders', data);
         if (response.status === 200) {
-            console.log(`${response.data.created_at} - successfuly bought ${response.data.filled_size} BTC for ${funds} EUR`)
+            console.log(`${response.data.created_at} - success ${orderData.side} ${orderData.product_id} for ${orderData.funds}`)
             return response.data;
         }
 
@@ -78,8 +67,8 @@ exports.buyBtcForEur = async (funds) => {
 
     //Return null if request fails
     return null;
-
 }
+
 
 
 /**
@@ -91,7 +80,7 @@ exports.buyBtcForEur = async (funds) => {
  * @param {object} body data params for api call
  * @returns  instance of axios object
  */
-const createAxios = (method, endpoint, body) => {
+ const createAxios = (method, endpoint, body) => {
     const timestamp = Date.now() / 1000;
 
     //If passed data object then stringify
@@ -123,3 +112,58 @@ const createAxios = (method, endpoint, body) => {
 
     return instance;
 }
+
+
+
+
+/*** DELETE THIS METHODS ******/
+
+// /**
+//  * 
+//  * @returns get btc price in eur in last tick
+//  */
+// exports.getBtcEurPrice = async () => {
+//     try {
+//         const axiosInstance = createAxios('GET', '/products/BTC-EUR/ticker', '');
+//         const response = await axiosInstance.get('/products/BTC-EUR/ticker');
+//         if (response.status === 200) {
+//             return response.data.price;
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+
+//     //Return null if request fails
+//     return null;
+// }
+
+// /**
+//  * 
+//  * @param {float} funds amount of eur 
+//  * @returns 
+//  */
+// exports.buyBtcForEur = async (funds) => {
+//     try {
+//         const data = {
+//             type: 'market',
+//             side: 'buy',
+//             product_id: 'BTC-EUR',
+//             funds: funds
+//         };
+
+//         const axiosInstance = createAxios('POST', '/orders', data);
+//         const response = await axiosInstance.post('/orders', data);
+//         if (response.status === 200) {
+//             console.log(`${response.data.created_at} - successfuly bought ${response.data.filled_size} BTC for ${funds} EUR`)
+//             return response.data;
+//         }
+
+//     } catch (error) {
+//         console.log(error.data);
+//     }
+
+//     //Return null if request fails
+//     return null;
+
+// }
+
