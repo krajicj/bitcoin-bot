@@ -3,6 +3,9 @@ const model = require("../model/model");
 const coinbase = require("./coinbase");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
+const fs = require('fs');
+const utils = require("../utils/utils");
+
 
 /**
  * Array of running jobs
@@ -15,8 +18,6 @@ const runningJobs = new Map();
 const listOfJobs = ["buy_btc_eur", "test"];
 
 /****************  API METHODS  *****************/
-
-//TODO get all markets
 
 /**
  * API method to get products
@@ -105,7 +106,8 @@ exports.addScheduleJob = asyncHandler(async (req, res, next) => {
     return;
   }
 
-  //Check if exist function to plan //TODO check from api
+  //Check if exist function to plan 
+  //TODO check from api
   const functionExist = listOfJobs.indexOf(job.functionName) !== -1;
   if (!functionExist) {
     //Function not defined
@@ -186,6 +188,25 @@ exports.addOrUpdateJob = (job) => {
   if (exist) model.deleteJob(job.id);
   return model.addJob(job);
 };
+
+/**
+ * Load jobs from config file
+ */
+exports.loadConfigJobs = () => {
+  //Add job from config if exist
+  const initConfig = fs.readFileSync("./config/job.json");
+  if (utils.isJson(initConfig)) {
+    const initJob = JSON.parse(initConfig);
+    if(Array.isArray(initJob)){
+        initJob.forEach(job => {
+          this.addOrUpdateJob(job);
+        });
+    }else{
+      this.addOrUpdateJob(initJob);
+    }
+  }
+
+}
 
 /**
  * Plan job to the running jobs

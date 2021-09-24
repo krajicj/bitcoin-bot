@@ -18,20 +18,22 @@
 
 ## Job settings:
 
-        {
-            "minute": "0",
-            "hour": "5",
-            "dayOfMonth": "*",
-            "month": "*",
-            "dayOfWeek": "1,3,5",
-            "orderData": {
-                "funds": "10",
-                "type": "market",
-                "side": "buy",
-                "product_id": "BTC-EUR"
+       [
+           {
+                "minute": "0",
+                "hour": "5",
+                "dayOfMonth": "*",
+                "month": "*",
+                "dayOfWeek": "1,3,5",
+                "orderData": {
+                    "funds": "10",
+                    "type": "market",
+                    "side": "buy",
+                    "product_id": "BTC-EUR"
+                }
+                "id":"1"
             }
-
-        }
+        ]
 
 For orderData specification visit https://docs.pro.coinbase.com/#place-a-new-order
 

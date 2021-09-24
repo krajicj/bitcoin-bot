@@ -23,12 +23,9 @@ const mainApp = async () => {
   //Check main password or set it if it is firt run of the app
   await locker.checkPassword();
 
-  //Add job from config if exist
-  const initConfig = fs.readFileSync("./config/job.json");
-  if (utils.isJson(initConfig)) {
-    const initJob = JSON.parse(initConfig);
-    scheduler.addOrUpdateJob(initJob);
-  }
+  
+  //Load jobs from config
+  scheduler.loadConfigJobs();
 
   //Starts all jobs
   scheduler.startJobs();

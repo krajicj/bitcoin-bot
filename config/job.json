@@ -1,4 +1,4 @@
-{
+[{
     "minute": "0",
     "hour": "5",
     "dayOfMonth": "*",
@@ -9,5 +9,21 @@
         "type": "market",
         "side": "buy",
         "product_id": "BTC-EUR" 
-    }
+    },
+    "id": "1"
+},
+{
+    "minute": "0",
+    "hour": "5",
+    "dayOfMonth": "*",
+    "month": "*",
+    "dayOfWeek": "2,4",    
+    "orderData": {
+        "funds": "10",
+        "type": "market",
+        "side": "buy",
+        "product_id": "ETH-EUR" 
+    },
+    "id": "2"
 }
+]
