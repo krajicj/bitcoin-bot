@@ -1,71 +1,74 @@
-# Bitcoin bot
+# Bitcoin bot server
 
-## Usage:
+## Run on Raspberry
 
-1.  clone the repository
+### Build for Raspberry
 
-2.       npm install
+docker buildx build --platform linux/arm/v7 -t alpine-arm32 --load . -t krajicj/crypto-bot-server-arm
 
-3.  create a config.env file from the tamplate './config/TMP.config.env'
 
-4.  create your API keys on the coinbase pro, do not forget to set API key priviliges to trade
+1) Flash SD card with Raspbian OS 
+	- https://www.raspberrypi.com/software/operating-systems/
+	- https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-05-28/2021-05-07-raspios-buster-armhf-lite.zip
 
-5.  put your API keys to the config.env file
+2) Put SD card into your raspberry and plug in into power. After boot the default login and password is (pi raspberry)
 
-6.  edit this file './config/job.json' to change bot options (default behaviour is: buy BTC for 10 EUR in 5 am morning every Monday, Wednesday and Friday)
+3) Change your raspberry pi account password "sudo raspi-config"
 
-7.       npm start
+4) Shutdown raspberry "sudo shutdown" remove SD card, plug it into your pc and run command in volume folder on SD card "touch ssh" This enable ssh access
+	- https://phoenixnap.com/kb/enable-ssh-raspberry-pi
 
-## Job settings:
+5) Connect your raspberry to the internet via patch cabel
 
-       [
-           {
-                "minute": "0",
-                "hour": "5",
-                "dayOfMonth": "*",
-                "month": "*",
-                "dayOfWeek": "1,3,5",
-                "orderData": {
-                    "funds": "10",
-                    "type": "market",
-                    "side": "buy",
-                    "product_id": "BTC-EUR"
-                }
-                "id":"1"
-            }
-        ]
+6) Run commands "sudo apt-get update" and "sudo apt-get upgrade" to update system
 
-For orderData specification visit https://docs.pro.coinbase.com/#place-a-new-order
+7) Set static ip address of your raspberry
+	- https://www.ionos.com/digitalguide/server/configuration/provide-raspberry-pi-with-a-static-ip-address/
+	- "sudo service dhcpcd start"
+	- "sudo systemctl enable dhcpcd"
+	- "sudo nano /etc/dhcpcd.conf"
 
-## Cron Syntax
+	- uncomment these lines and set ip_address to some free ip address in your network
 
-This is a quick reference to cron syntax and also shows the options supported by node-cron.
+interface eth0
+static ip_address=192.168.0.4/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
 
-### Allowed fields
+8) Reboot by "sudo reboot"
 
-```
- # ┌────────────── second (optional)
- # │ ┌──────────── minute
- # │ │ ┌────────── hour
- # │ │ │ ┌──────── day of month
- # │ │ │ │ ┌────── month
- # │ │ │ │ │ ┌──── day of week
- # │ │ │ │ │ │
- # │ │ │ │ │ │
- # * * * * * *
-```
+9) Now you can access raspberry via ssh
+	- "ssh ip_address -l pi"
+	- then enter your password for account pi
+ 
 
-### Allowed values
+10) install docker
+	- https://phoenixnap.com/kb/docker-on-raspberry-pi
+	- "curl -fsSL https://get.docker.com -o get-docker.sh"
+	- "sudo sh get-docker.sh"
+	- "sudo usermod -aG docker pi"
 
-| field        | value                             |
-| ------------ | --------------------------------- |
-| second       | 0-59                              |
-| minute       | 0-59                              |
-| hour         | 0-23                              |
-| day of month | 1-31                              |
-| month        | 1-12 (or names)                   |
-| day of week  | 0-7 (or names, 0 or 7 are sunday) |
+11) Install app using docker
 
-#### Using multiples values
+sudo docker pull krajicj/crypto-bot-server-arm
 
-You may use multiples values separated by comma:
+sudo docker pull krajicj/crypto-bot-front-arm
+
+sudo docker create --name crypto-bot-server -i -p 5000:5000 --restart unless-stopped krajicj/crypto-bot-server-arm 
+
+sudo docker start -i crypto-bot-server
+
+Set password of your app and hit ctr + c
+
+sudo docker start crypto-bot-server
+
+sudo docker create --name crypto-bot-front -p 3000:3000 --restart unless-stopped krajicj/crypto-bot-front-arm 
+
+sudo docker start crypto-bot-front
+
+12) If you are on the same network you can put your raspberry_ip_address:3000 to your browser and log in to the system with app password you choose
+
+13) On page keys set your coinbase pro api keys 
+
+14) Create schedulers and DCA...
+
