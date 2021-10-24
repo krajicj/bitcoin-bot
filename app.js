@@ -23,7 +23,6 @@ const mainApp = async () => {
   //Check main password or set it if it is firt run of the app
   await locker.checkPassword();
 
-  
   //Load jobs from config
   scheduler.loadConfigJobs();
 
@@ -42,13 +41,25 @@ const mainApp = async () => {
   app.use("/api/v1/keys", apiKeys);
   app.use("/api/v1/locker", lockerRoute);
 
-  const PORT = process.env.PORT || 3000;
+  scheduler.setProducts();
 
+  const PORT = process.env.PORT || 5000;
+  
   app.listen(PORT, () => {
     console.log(
       `Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`
     );
   });
+
+  const currentdate = new Date(); 
+  const datetime = "Time check: " + currentdate.getDate() + "/"
+                  + (currentdate.getMonth()+1)  + "/" 
+                  + currentdate.getFullYear() + " @ "  
+                  + currentdate.getHours() + ":"  
+                  + currentdate.getMinutes() + ":" 
+                  + currentdate.getSeconds();
+
+  console.log(datetime);                
 
   //TESTING
   //console.log(process.env.PASS);
@@ -56,4 +67,3 @@ const mainApp = async () => {
 };
 
 mainApp();
-

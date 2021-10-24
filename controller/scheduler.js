@@ -14,23 +14,44 @@ const runningJobs = new Map();
 
 /**
  * List of jobs, that can be planed
+ * 
  */
-const listOfJobs = ["buy_btc_eur", "test"];
+let listOfProducts = model.getProducts();
+
+/**
+ * Store list of product in DB and load them from the DB
+ */
+exports.setProducts = async () => {
+  const listOfProductsCoin = await getListOfProducts()
+  if(listOfProductsCoin){
+    model.addProducts(listOfProductsCoin);
+  }
+}
+
+/**
+ * 
+ * Load products from coinbase
+ * @returns avaliable products
+ */
+const getListOfProducts = async () => {
+  const products = await coinbase.getProducts();
+  const productIds = [];
+  products.forEach((product) => {
+    productIds.push(product.id);
+  });
+  return productIds;
+}
 
 /****************  API METHODS  *****************/
 
 /**
  * API method to get products
  */
-exports.getAvalProducts = asyncHandler(async (req, res, next) => {
-  const products = await coinbase.getProducts();
-  const productIds = [];
-  products.forEach((product) => {
-    productIds.push(product.id);
-  });
-
+exports.getAvalProducts = asyncHandler(async (req, res, next) => {  
+  const productIds = await getListOfProducts();
   res.json(productIds);
 });
+
 
 /**
  * API method to get all jobs
@@ -107,11 +128,11 @@ exports.addScheduleJob = asyncHandler(async (req, res, next) => {
   }
 
   //Check if exist function to plan 
-  //TODO check from api
-  const functionExist = listOfJobs.indexOf(job.functionName) !== -1;
+  //check from api
+  const functionExist = listOfProducts.indexOf(job.orderData.product_id) !== -1;
   if (!functionExist) {
     //Function not defined
-    res.json({ status: "error", msg: "This market function is not exist" });
+    res.json({ status: "error", msg: `This product (${job.orderData.product_id}) is not exist` });
     return;
   }
 
@@ -225,8 +246,9 @@ const planJob = function (job) {
   //  # │ │ │ │ │ │
   //  # * * * * * *
   const repeat = `${job.second || ""} ${job.minute} ${job.hour} ${
-    job.dayOfMonth
-  } ${job.month} ${job.dayOfWeek}`;
+    job.dayOfMonth 
+  } ${job.month } ${job.dayOfWeek }`;
+
 
   //Unplan job if exist
   if (runningJobs.has(job.id)) {
@@ -275,9 +297,10 @@ const orderWrapper = async (job) => {
  * @param {int} jobId id of the job to destroy
  */
 const destroyRunnigJob = (jobId) => {
-  runningJobs.get(jobId).destroy();
+  runningJobs.get(jobId).stop();
   runningJobs.delete(jobId);
 };
+
 
 
 /**

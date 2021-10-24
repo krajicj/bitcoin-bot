@@ -1,4 +1,5 @@
-const asyncHandler = require('express-async-handler')
+const asyncHandler = require('express-async-handler');
+const {setProducts} = require('./scheduler');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -6,7 +7,9 @@ const bcrypt = require('bcryptjs');
 // @route     POST /api/v1/auth/login
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
-   
+        //Update product list
+        setProducts();
+
         //Check if password correct
         const validPassword = await bcrypt.compare(req.body.password, process.env.MAIN_PASSWORD);
     
@@ -15,7 +18,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         }
         const token = this.createToken();
     
-        res.header("auth-token", token).send(token);
+        res.header("auth-token", token).json({jwt:token});
     });
     
    
